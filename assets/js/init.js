@@ -9,10 +9,10 @@ var videoDefined = false;
 	
 $(document).ready(function() {
                 
-	_startLoading();
+	// _startLoading();
 
 	// fade in backgrounds, countdown
-	$('#bg-image').animate({opacity: 1}, 1000);
+	// $('#bg-image').animate({opacity: 1}, 1000);
 		
 	// init subscribe form
 	/*$(".newsletter form").submit(function (event) {
@@ -25,7 +25,6 @@ $(document).ready(function() {
 			url: "scripts/subscription.php",
 			data: postData,
 			success: function(data) {
-
 				if (data == "success")
 					status.html("Thanks for your interest! We will let you know.").slideDown();
 				
@@ -167,12 +166,12 @@ function _initDesktop() {
 
 function _scrollDown() {
 
-	$('#bg-overlay').stop().animate({'top':0}, 800);
+	$('#bg-overlay').stop().animate({'top':0}, 0);
 
-	$('.scrolldown').stop().animate({opacity:0}, 400);
+	$('.scrolldown').stop().animate({opacity:0}, 0);
 	
 	var winHeight = $(window).height();
-	$('#content').stop().animate({scrollTop: winHeight}, 800,function(){
+	$('#content').stop().animate({scrollTop: winHeight}, 0,function(){
 		in_motion = false;	
 		showing_countdown = false;
 		$('#widgets').addClass('opened');		

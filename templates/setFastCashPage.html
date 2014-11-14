@@ -8,11 +8,13 @@
 	<title>Bank Machine - 4HC3 Assignment</title>
 	
 	<!-- STYLESHEETS -->
-	<link rel="stylesheet" href="./assets/css/style.css"> <!-- main stylesheet -->
-	<link rel="stylesheet" href="./assets/css/media-queries.css"> <!-- media queries -->
-	<link rel="stylesheet" href="./assets/css/no-header.css"> <!-- no-header -->
+	<link rel="stylesheet" href="/assets/css/style.css"> <!-- main stylesheet -->
+	<link rel="stylesheet" href="/assets/css/media-queries.css"> <!-- media queries -->
+	<link rel="stylesheet" href="/assets/css/no-header.css"> <!-- no-header -->
 	<link rel="stylesheet" href="/assets/css/bootstrap.css"> <!-- main stylesheet -->
 	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css"> <!-- main stylesheet -->
+	<link rel="stylesheet" href="/assets/css/toastr.min.css"> <!-- main stylesheet -->
+
 
 	<!--[if IE 9]>
 	<link rel="stylesheet" type="text/css" media="all" href="assets/css/ie.9.css"/> <!-- styles for IE 9 -->
@@ -22,21 +24,21 @@
 	<link rel="stylesheet" type="text/css" media="all" href="assets/css/ie.lt9.css"/> <!-- styles for IE 8 and less -->
 	<![endif]-->
 
-	<link class="preset" rel="stylesheet" href="./assets/css/colors/photo.css"> <!-- Pick a preset (photo.css, video.css, custom.css)-->
+	<link class="preset" rel="stylesheet" href="/assets/css/colors/photo.css"> <!-- Pick a preset (photo.css, video.css, custom.css)-->
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"> <!-- jQuery UI stylesheet -->
 
 	<!-- JAVASCRIPTS -->
-	<script type="text/javascript" src="./assets/js/bootstrap.js"></script>javascript-->
+	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>javascript-->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> <!-- Load jQuery library -->
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.js"></script> <!-- Load jQuery UI library -->
-	<script type="text/javascript" src="./assets/js/jquery.mousewheel.min.js"></script> <!-- Load jQuery Mousewheel  -->
-	<script type="text/javascript" src="./assets/js/jquery.nicescroll.min.js"></script> <!-- Load jQuery NiceScroll  -->
-	<script type="text/javascript" src="./assets/js/jquery.screwdefaultbuttonsV2.min.js"></script> <!-- Load screwDefaultButtons -->
-	<script type="text/javascript" src="./assets/js/jquery.countdown.min.js"></script> <!-- Load jQuery Countdown library -->
-	<script type="text/javascript" src="./assets/js/jquery.tubular.1.0.js"></script> <!-- Load jQuery Tubular -->
-	<script type="text/javascript" src="./assets/js/jquery_cookie.js"></script> <!-- Load jQuery Cookie -->
-	<script type="text/javascript" src="./assets/js/twitter/jquery.tweet.min.js"></script> <!-- Load jQuery Twitter library -->
-	<script type="text/javascript" src="./assets/js/init.js"></script> <!-- Init --> 
+	<script type="text/javascript" src="/assets/js/jquery.mousewheel.min.js"></script> <!-- Load jQuery Mousewheel  -->
+	<script type="text/javascript" src="/assets/js/jquery.nicescroll.min.js"></script> <!-- Load jQuery NiceScroll  -->
+	<script type="text/javascript" src="/assets/js/jquery.screwdefaultbuttonsV2.min.js"></script> <!-- Load screwDefaultButtons -->
+	<script type="text/javascript" src="/assets/js/jquery.countdown.min.js"></script> <!-- Load jQuery Countdown library -->
+	<script type="text/javascript" src="/assets/js/jquery.tubular.1.0.js"></script> <!-- Load jQuery Tubular -->
+	<script type="text/javascript" src="/assets/js/jquery_cookie.js"></script> <!-- Load jQuery Cookie -->
+	<script type="text/javascript" src="/assets/js/twitter/jquery.tweet.min.js"></script> <!-- Load jQuery Twitter library -->
+	<script type="text/javascript" src="/assets/js/init.js"></script> <!-- Init --> 
 	
 </head>
 
@@ -45,9 +47,6 @@
 	<div id="bg-image"></div>
 	<div id="bg-pattern"></div>
 	<div id="bg-overlay"></div>
-	<div id="bg-loading">
-		<div class="loader"></div>
-	</div>
 		
 	<!-- Main Page -->
 	<div id="main">
@@ -74,8 +73,8 @@
 				
 				<!-- Widget: Title / Description -->
 				<div class="section intro">
-					<h1 class="title"><span>Welcome!</span></h1>
-					<p style="font-size:large" class="description">Please swipe your card through the card reader.<br><b>Enter your PIN</b> on the next screen.</p> 					
+					<h1 class="title"><span>Set Fast Cash Amount</span></h1>
+					<p style="font-size:large" class="description">Please enter the desired amount.</p> 					
 				</div>
 				<!-- Widget: Title / Description end -->
 	
@@ -83,11 +82,11 @@
 				<!-- Widget: Newsletter -->
 				<div class="section newsletter">
 					<fieldset>
-						<legend>Enter your account number</legend>
+						<legend>Enter New Fast Cash Amount</legend>
 						<p class="status"></p>
 						<form method="post">
-							<input name="accountNumber" class="text" placeholder="Account Number" autofocus> 
-						  	<input type="submit" name="submit" class="transition submit" value="Swipe">
+							<input name="fastCashAmount" type="number" min="20" step="20"placeholder="Fast Cash Amount">
+						  	<input type="submit" name="submit" class="transition submit" value="Proceed">
 						</form>
 					</fieldset>
 					
@@ -107,6 +106,27 @@
 
 	</div>
 	<!-- Main Page end -->
+
+	<script type="text/javascript" src="/assets/js/toastr.min.js"></script>
+	<!-- Google Analytics -->
+  	<script type="text/javascript">
+  	$(document).ready(function() {
+
+		// set options
+		toastr.options.showDuration = "300";
+	    toastr.options.closeButton = true;
+
+	    // shows on page load 
+	    {% if qry.transactionStatus == "error_notext" %}
+	    toastr.warning('Please enter a valid amount!');
+	    {% endif %}
+
+	    {% if qry.transactionStatus == "error" %}
+	    toastr.error('Error occured, please try again.');
+	    {% endif %}
+
+	});
+	</script>  
 
 </body>
 </html>

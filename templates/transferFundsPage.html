@@ -13,10 +13,8 @@
 	<link rel="stylesheet" href="/assets/css/no-header.css"> <!-- no-header -->
 	<link rel="stylesheet" href="/assets/css/bootstrap.css"> <!-- main stylesheet -->
 	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css"> <!-- main stylesheet -->
-	<link rel="stylesheet" href="/assets/css/bootstrap.css.map"> <!-- main stylesheet -->
-	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css.map"> <!-- main stylesheet -->
 	<link rel="stylesheet" href="/assets/css/toastr.min.css"> <!-- main stylesheet -->
-
+	
 
 	<!--[if IE 9]>
 	<link rel="stylesheet" type="text/css" media="all" href="assets/css/ie.9.css"/> <!-- styles for IE 9 -->
@@ -39,8 +37,8 @@
 	<script type="text/javascript" src="/assets/js/jquery.countdown.min.js"></script> <!-- Load jQuery Countdown library -->
 	<script type="text/javascript" src="/assets/js/jquery.tubular.1.0.js"></script> <!-- Load jQuery Tubular -->
 	<script type="text/javascript" src="/assets/js/jquery_cookie.js"></script> <!-- Load jQuery Cookie -->
+	<script type="text/javascript" src="/assets/js/twitter/jquery.tweet.min.js"></script> <!-- Load jQuery Twitter library -->
 	<script type="text/javascript" src="/assets/js/init.js"></script> <!-- Init --> 
-	
 	
 </head>
 
@@ -69,49 +67,56 @@
 				<div class="countdown-widget" id="countdown-widget" data-time="" data-timezone=""></div>
 			</div>
 			<!-- Countdown end -->
-
+					    
 			<div id="widgets">	
 				<!--<span class="close"></span>-->
 				
 				<!-- Widget: Title / Description -->
 				<div class="section intro">
-					<h1 class="title"><span>Hello {{qry.userName}}!</span></h1>
+					<h1 class="title"><span>Transfer Funds</span></h1>
 					<p style="font-size:large" class="description">Your Account Number: {{qry.accountNumber}} has the following balances:<br>Chequing Account: ${{qry.cheqBalance}}.00<br>Savings Account: ${{qry.savBalance}}.00</p>					
 				</div>
 				<!-- Widget: Title / Description end -->
 	
+				
 				<!-- Widget: Newsletter -->
 				<div class="section newsletter">
 					<fieldset>
-						<legend>Select a Transaction</legend>
+						<legend>Enter Transfer Details</legend>
 						<p class="status"></p>
 						<form method="post" class="form-horizontal" role="form">
-						  <div class="form-group">
-						  	<div class="row">
-							    <button name="fastCashButton" type="submit" class="col-md-4 btn btn-lg btn-primary" value="Fast Cash">Fast Cash: ${{qry.lastWithdrewAmount}}</button>
-							    <button name="withdrawButton" type="submit" class="col-md-4 col-md-offset-4 btn btn-lg btn-primary" value="Cash Withdrawal">Cash Withdrawal</button>
-						    </div>
-						  </div>
-						  <div class="form-group">
-						  	<div class="row">
-						      <button name="transferFundsButton" type="submit" class="col-md-4 btn btn-lg btn-primary" value="Funds Transfer">Funds Transfer</button>
-						      <button name="depositButton" type="submit" class="col-md-4 col-md-offset-4 btn btn-lg btn-primary" value="Deposit Funds">Deposit Funds</button>
-						    </div>
-						  </div>
-						  <div class="form-group">
-						  	<div class="row">
-						      <button name="changePINButton" type="submit" class="col-md-4 btn btn-lg btn-primary" value="Change PIN">Change PIN</button>
-						      <button name="prefButton" type="submit" class="col-md-4 col-md-offset-4 btn btn-lg btn-primary" value="Set Preferences">Set Preferences</button>
-						    </div>
-						  </div>
-						  <div class="form-group">
+							<div class="form-group form-group-lg">
+								<label class="col-sm-2 control-label" for="formGroupInputLarge">From Account</label>
+							    <div class="col-sm-10">
+							    	<select name="fromAccount" class="form-control" type="text" placeholder="From Account">
+							      		<option>Chequings</option>
+							      		<option>Savings</option>
+						      		</select>
+							    </div>
+							</div>
+							<div class="form-group form-group-lg">
+								<label class="col-sm-2 control-label" for="formGroupInputLarge">To Account</label>
+							    <div class="col-sm-10">
+							      <select name="toAccount" class="form-control" type="text" placeholder="To Account">
+							      		<option>Savings</option>
+							      		<option>Chequings</option>
+						      		</select>
+							    </div>
+							</div>
+							<div class="form-group form-group-lg">
+								<label class="col-sm-2 control-label" for="formGroupInputLarge">Transfer Amount</label>
+							    <div class="col-sm-10">
+							      <input name="transferAmount" class="form-control" type="number" placeholder="Enter transfer amount">
+							    </div>
+							</div>
+						    <div class="form-group">
 						    <div class="col-md-12">
-						      <button name="exitButton" type="submit" class="btn btn-lg btn-danger btn-block" value="Exit">Exit</button>
+   						      <button name="cancelButton" type="submit" class="btn btn-lg btn-danger btn-default" value="Cancel">Cancel</button>
+						      <button name="proceedButton" type="submit" class="btn btn-lg btn-primary btn-default" value="Proceed">Proceed</button>
 						    </div>
 						  </div>
 						</form>
 					</fieldset>
-					
 				</div>
 				<!-- Widget: Newsletter end -->		
 				
@@ -129,6 +134,8 @@
 	</div>
 	<!-- Main Page end -->
 
+
+
 	<script type="text/javascript" src="/assets/js/toastr.min.js"></script>
 	<!-- Google Analytics -->
   	<script type="text/javascript">
@@ -137,50 +144,9 @@
 		// set options
 		toastr.options.showDuration = "300";
 	    toastr.options.closeButton = true;
-
-	    // shows on page load 
-	    {% if qry.transactionStatus == "auth_success" %}
-	    toastr.success('Authentication Successful!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "withdraw_success" %}
-	    toastr.success('Withdraw Transaction Successful!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "deposit_success" %}
-	    toastr.success('Deposit Complete!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "fastCash_success" %}
-	    toastr.success('Fast Cash Transaction Successful!');
-	    {% endif %}
-
-		{% if qry.transactionStatus == "transferfunds_success" %}
-	    toastr.success('Funds Transfer Successful!');
-	    {% endif %}
-
-		{% if qry.transactionStatus == "pinchange_success" %}
-	    toastr.success('PIN Change Successful!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "namechange_success" %}
-	    toastr.success('Name Change Successful!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "setfastcash_success" %}
-	    toastr.success('Fast Cash Amount Set!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "pinchange_cancel" %}
-	    toastr.info('PIN Change Cancelled!');
-	    {% endif %}
-
-	    {% if qry.transactionStatus == "transaction_cancelled" %}
-	    toastr.info('Transaction Cancelled!');
-	    {% endif %}
-
+	    	    
 	});
-	</script>  
+	</script> 
 
 </body>
 </html>

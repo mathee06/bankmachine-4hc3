@@ -13,3 +13,4 @@ class bankAccountDB(ndb.Model):
     lastWithdrewAmount = ndb.IntegerProperty(required=True)
     currentAccount = ndb.StringProperty(required=True)
     desiredTransaction = ndb.StringProperty()
+    transactionStatus = ndb.StringProperty()
