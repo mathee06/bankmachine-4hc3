@@ -40,8 +40,6 @@
 	<script type="text/javascript" src="/assets/js/jquery.tubular.1.0.js"></script> <!-- Load jQuery Tubular -->
 	<script type="text/javascript" src="/assets/js/jquery_cookie.js"></script> <!-- Load jQuery Cookie -->
 	<script type="text/javascript" src="/assets/js/init.js"></script> <!-- Init --> 
-	
-	
 </head>
 
 <body class="no-header no-countdown">
@@ -145,6 +143,14 @@
 
 	    {% if qry.transactionStatus == "withdraw_success" %}
 	    toastr.success('Withdraw Transaction Successful!');
+	    {% endif %}
+
+	    {% if qry.transactionStatus == "insuff_withdraw" %}
+	    toastr.error('Insufficient Funds for Transaction');
+	    {% endif %}
+
+		{% if qry.transactionStatus == "insuff_withdraw" %}
+	    toastr.error('Transaction Cancelled!');
 	    {% endif %}
 
 	    {% if qry.transactionStatus == "deposit_success" %}

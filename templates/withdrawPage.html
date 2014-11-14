@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="/assets/css/no-header.css"> <!-- no-header -->
 	<link rel="stylesheet" href="/assets/css/bootstrap.css"> <!-- main stylesheet -->
 	<link rel="stylesheet" href="/assets/css/bootstrap-theme.css"> <!-- main stylesheet -->
+	<link rel="stylesheet" href="/assets/css/toastr.min.css"> <!-- main stylesheet -->
 
 	<!--[if IE 9]>
 	<link rel="stylesheet" type="text/css" media="all" href="assets/css/ie.9.css"/> <!-- styles for IE 9 -->
@@ -129,23 +130,20 @@
 	</div>
 	<!-- Main Page end -->
 
+	<script type="text/javascript" src="/assets/js/toastr.min.js"></script>
 	<!-- Google Analytics -->
   	<script type="text/javascript">
-  	
-  		var google_analytics_id = '';  // Enter your ID here. ex: UA-9999999-99
-  		
-  		if(google_analytics_id != '') {
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', google_analytics_id]);
-			_gaq.push(['_trackPageview']);
-			
-			(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			})();
-		}	
-	</script>  
+  	$(document).ready(function() {
+
+		// set options
+		toastr.options.showDuration = "300";
+	    toastr.options.closeButton = true;
+	    
+	    // shows on page load 
+	    
+
+	});
+	</script> 
 
 </body>
 </html>

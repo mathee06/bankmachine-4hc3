@@ -6,21 +6,37 @@ import random
 #######            python -m tabnanny main.py
 #######            fuser -k 8080/tcp
 
-def withdrawFromCheq(qry, balance, amount):
+def withdrawFromCheq(self, entityKey, qry, balance, amount):
     logging.info("USER WISHES TO WITHDRAW: " + str(amount))
-    qry.cheqBalance = balance - amount
-    qry.lastWithdrewAmount = amount
-    qry.transactionStatus = "withdraw_success"
-    qry.put()
-    return
+    newBalance = balance - amount
+    logging.info("NEW BALANCE IS: " + str(newBalance))
+    if (newBalance >= 0):
+        qry.cheqBalance = balance - amount
+        qry.lastWithdrewAmount = amount
+        qry.transactionStatus = "withdraw_success"
+        qry.put()
+        return
+    else:
+        logging.info("INSUFFICIENT FUNDS!")
+        qry.transactionStatus = "insuff_withdraw"
+        qry.put()
+        return
 
-def withdrawFromSav(qry, balance, amount):
+def withdrawFromSav(self, entityKey, qry, balance, amount):
     logging.info("USER WISHES TO WITHDRAW: " + str(amount))
-    qry.savBalance = balance - amount
-    qry.lastWithdrewAmount = amount
-    qry.transactionStatus = "withdraw_success"
-    qry.put()
-    return
+    newBalance = balance - amount
+    logging.info("NEW BALANCE IS: " + str(newBalance))
+    if (newBalance >= 0):
+        qry.savBalance = newBalance
+        qry.lastWithdrewAmount = amount
+        qry.transactionStatus = "withdraw_success"
+        qry.put()
+        return
+    else:
+        logging.info("INSUFFICIENT FUNDS!")
+        qry.transactionStatus = "insuff_withdraw"
+        qry.put()
+        return
 
 class MainPage(SiteHandler):
     def get(self):
@@ -172,7 +188,7 @@ class accountSelection(SiteHandler):
 
             elif (qry.desiredTransaction == "fastCash"):
                 logging.info("USER WISHES TO FAST CASH FROM CHEQUINGS")
-                withdrawFromCheq(qry, qry.cheqBalance, qry.lastWithdrewAmount)
+                withdrawFromCheq(self, entityKey, qry, qry.cheqBalance, qry.lastWithdrewAmount)
                 qry.transactionStatus = "fastCash_success"
                 qry.put()
                 self.redirect("/task/%s" % entityKey)  
@@ -192,7 +208,7 @@ class accountSelection(SiteHandler):
 
             elif (qry.desiredTransaction == "fastCash"):
                 logging.info("USER WISHES TO FAST CASH FROM SAVINGS")
-                withdrawFromSav(qry, qry.savBalance, qry.lastWithdrewAmount)
+                withdrawFromSav(self, entityKey, qry, qry.savBalance, qry.lastWithdrewAmount)
                 qry.transactionStatus = "fastCash_success"
                 qry.put()
                 self.redirect("/task/%s" % entityKey)
@@ -208,6 +224,8 @@ class withdraw(SiteHandler):
         qry = bankAccountDB.get_by_id(int(entityKey))
         logging.info("WITHDRAWING SOME MOOLAH BIATCH")
         self.render("withdrawPage.html", entityKey=entityKey, qry=qry)
+        qry.transactionStatus = ""
+        qry.put()
 
     def post(self, entityKey):
         logging.info("USER IS WITHDRAWING...")
@@ -235,50 +253,50 @@ class withdraw(SiteHandler):
             balance = qry.cheqBalance
             logging.info("USER HAS A CHEQUINGS BALANCE OF: " + str(balance))
             if twentyButton:
-                    withdrawFromCheq(qry, balance, 20)
+                    withdrawFromCheq(self, entityKey, qry, balance, 20)
 
             if fortyButton:
-                    withdrawFromCheq(qry, balance, 40)
+                    withdrawFromCheq(self, entityKey, qry, balance, 40)
 
             if sixtyButton:
-                    withdrawFromCheq(qry, balance, 60)
+                    withdrawFromCheq(self, entityKey, qry, balance, 60)
 
             if eightyButton:
-                    withdrawFromCheq(qry, balance, 80)
+                    withdrawFromCheq(self, entityKey, self, qry, balance, 80)
 
             if oneBillButton:
-                    withdrawFromCheq(qry, balance, 100)
+                    withdrawFromCheq(self, entityKey, qry, balance, 100)
 
             if twoBillButton:
-                    withdrawFromCheq(qry, balance, 200)
+                    withdrawFromCheq(self, entityKey, qry, balance, 200)
 
             if (otherAmount or acceptButton):
-                    withdrawFromCheq(qry, balance, int(otherAmount))
+                    withdrawFromCheq(self, entityKey, qry, balance, int(otherAmount))
 
         elif (qry.currentAccount == "sav"):
             balance = qry.savBalance
             logging.info("USER HAS A SAVINGS BALANCE OF: " + str(balance))
 
             if twentyButton:
-                    withdrawFromSav(qry, balance, 20)
+                    withdrawFromSav(self, entityKey, qry, balance, 20)
 
             if fortyButton:
-                    withdrawFromSav(qry, balance, 40)
+                    withdrawFromSav(self, entityKey, qry, balance, 40)
 
             if sixtyButton:
-                    withdrawFromSav(qry, balance, 60)
+                    withdrawFromSav(self, entityKey, qry, balance, 60)
 
             if eightyButton:
-                    withdrawFromSav(qry, balance, 80)
+                    withdrawFromSav(self, entityKey, qry, balance, 80)
 
             if oneBillButton:
-                    withdrawFromSav(qry, balance, 100)
+                    withdrawFromSav(self, entityKey, qry, balance, 100)
 
             if twoBillButton:
-                    withdrawFromSav(qry, balance, 200)
+                    withdrawFromSav(self, entityKey, qry, balance, 200)
 
             if (otherAmount or acceptButton):
-                    withdrawFromSav(qry, balance, int(otherAmount))
+                    withdrawFromSav(self, entityKey, qry, balance, int(otherAmount))
 
         self.redirect("/task/%s" % entityKey)
 
@@ -315,6 +333,7 @@ class transferFunds(SiteHandler):
         self.render("transferFundsPage.html", entityKey=entityKey, qry=qry)
 
     def post(self, entityKey):
+        logging.info("SUBMITTED TRANSFER REQUEST!")
         fromAccount = self.request.get("fromAccount")
         toAccount = self.request.get("toAccount")
         transferAmount = self.request.get("transferAmount")
@@ -322,20 +341,43 @@ class transferFunds(SiteHandler):
         cancelButton = self.request.get("cancelButton")
 
         qry = bankAccountDB.get_by_id(int(entityKey))
-        if proceedButton:
-            if (fromAccount == "Chequings"):
-                qry.cheqBalance = qry.cheqBalance - int(transferAmount)
-                qry.savBalance = qry.savBalance + int(transferAmount)
-                qry.transactionStatus = "transferfunds_success"
+        if (proceedButton or transferAmount):
+            if (fromAccount == toAccount):
+                logging.info("TRANSACTION NOT POSSIBLE!")
+                qry.transactionStatus = "transaction_notpossible"
                 qry.put()
-                self.redirect("/task/%s" % entityKey)
+                self.render("transferFundsPage.html", entityKey=entityKey, qry=qry)
 
-            elif (fromAccount == "Savings"):
-                qry.savBalance = qry.savBalance - int(transferAmount)
-                qry.cheqBalance = qry.cheqBalance + int(transferAmount)
-                qry.transactionStatus = "transferfunds_success"
-                qry.put()
-                self.redirect("/task/%s" % entityKey)
+            else: 
+                if (fromAccount == "Chequings"):
+                    logging.info("TRANSFERNG FUNDS FROM CHEQUINGS!" + transferAmount)
+                    newBalance = qry.cheqBalance - int(transferAmount)
+                    if (newBalance >= 0):
+                        qry.cheqBalance = newBalance
+                        qry.savBalance = qry.savBalance + int(transferAmount)
+                        qry.transactionStatus = "transferfunds_success"
+                        qry.put()
+                        self.redirect("/task/%s" % entityKey)
+                    else:
+                        logging.info("INSUFFICIENT FUNDS!")
+                        qry.transactionStatus = "insuff_withdraw"
+                        qry.put()
+                        self.redirect("/task/%s" % entityKey)
+
+                elif (fromAccount == "Savings"):
+                    logging.info("TRANSFERNG FUNDS FROM SAVINGS!")
+                    newBalance = qry.savBalance - int(transferAmount)
+                    if (newBalance >= 0):
+                        qry.savBalance = newBalance
+                        qry.cheqBalance = qry.cheqBalance + int(transferAmount)
+                        qry.transactionStatus = "transferfunds_success"
+                        qry.put()
+                        self.redirect("/task/%s" % entityKey)
+                    else:
+                        logging.info("INSUFFICIENT FUNDS!")
+                        qry.transactionStatus = "insuff_withdraw"
+                        qry.put()
+                        self.redirect("/task/%s" % entityKey)
 
         elif cancelButton:
             logging.info("USER HAS CANCELLED THE TRANSACTION!")

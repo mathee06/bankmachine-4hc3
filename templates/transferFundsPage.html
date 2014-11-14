@@ -144,6 +144,10 @@
 		// set options
 		toastr.options.showDuration = "300";
 	    toastr.options.closeButton = true;
+
+	    {% if qry.transactionStatus == "transaction_notpossible" %}
+	    toastr.warning('Transaction not possible!');
+	    {% endif %}
 	    	    
 	});
 	</script> 
