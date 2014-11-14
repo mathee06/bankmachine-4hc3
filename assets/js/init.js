@@ -8,42 +8,7 @@ var nbOfTicks = 0;
 var videoDefined = false;
 	
 $(document).ready(function() {
-                
-	// _startLoading();
-
-	// fade in backgrounds, countdown
-	// $('#bg-image').animate({opacity: 1}, 1000);
-		
-	// init subscribe form
-	/*$(".newsletter form").submit(function (event) {
-		event.preventDefault();
-		var postData = $(this).serialize();
-		var status = $(".newsletter p");
-		status.removeClass('shake');
-		$.ajax({
-			type: "POST",
-			url: "scripts/subscription.php",
-			data: postData,
-			success: function(data) {
-				if (data == "success")
-					status.html("Thanks for your interest! We will let you know.").slideDown();
-				
-				else if (data == "subscribed")
-					status.toggleClass('shake').html("This email is already subscribed.").slideDown();
-				 
-				else if (data == "invalid")
-					status.toggleClass('shake').html("This email is invalid.").slideDown();
-				
-				else
-					status.toggleClass('shake').html("Oups, something went wrong!").slideDown();	
-				
-			},
-			error: function () {
-				status.toggleClass('shake').html("Oups, something went wrong!").slideDown();
-			}
-		});
-	});*/
-			
+                			
 	// init scroll
 	if( _isMobile() ) {
 		
@@ -138,8 +103,6 @@ function _resize() {
 
 		$('#countdown-widget').css({'left':countdownLeft});
 	}
-	
-	$("#widgets").getNiceScroll().resize();
 	
 	if(!showing_countdown)
 		_scrollDown();
